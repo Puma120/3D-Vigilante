@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import PrintList from "./components/PrintList";
+import PrintForm from "./components/PrintForm";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [mostrarForm, setMostrarForm] = useState(false);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <div className="header-title">
+            <div>
+              <h1>Vigilante 3D </h1>
+              <p>Registro de impresiones 3D del salón</p>
+            </div>
+          </div>
+          <button className="btn-primary" onClick={() => setMostrarForm(true)}>
+            + Nueva impresión
+          </button>
+        </div>
+      </header>
 
-export default App
+      <main className="app-main">
+        <PrintList />
+      </main>
+
+      {mostrarForm && <PrintForm onClose={() => setMostrarForm(false)} />}
+    </div>
+  );
+}
