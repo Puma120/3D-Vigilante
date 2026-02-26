@@ -11,8 +11,9 @@ export default function App() {
       <header className="app-header">
         <div className="header-content">
           <div className="header-title">
+            <img src="/favicon.svg" alt="Logo Vigilante 3D" className="header-logo" />
             <div>
-              <h1>Vigilante 3D </h1>
+              <h1>Vigilante 3D</h1>
               <p>Registro de impresiones 3D del salón</p>
             </div>
           </div>

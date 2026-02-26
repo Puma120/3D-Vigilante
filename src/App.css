@@ -49,6 +49,12 @@ body {
   gap: 0.75rem;
 }
 
+.header-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
 .header-icon { font-size: 2rem; }
 
 .header-title h1 {
