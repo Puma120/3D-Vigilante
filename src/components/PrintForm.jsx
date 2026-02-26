@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import Notificacion from "./Notificacion";
 
 const estadoInicial = {
   nombre: "",
@@ -13,6 +14,7 @@ export default function PrintForm({ onClose }) {
   const [form, setForm] = useState(estadoInicial);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
+  const [notif, setNotif] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -38,7 +40,7 @@ export default function PrintForm({ onClose }) {
         fecha: serverTimestamp(),
       });
       setForm(estadoInicial);
-      if (onClose) onClose();
+      setNotif(true);
     } catch (err) {
       console.error("Error al guardar:", err);
       setError("Error al guardar el registro. Revisa la configuración de Firebase.");
@@ -48,7 +50,11 @@ export default function PrintForm({ onClose }) {
   };
 
   return (
-    <div className="form-overlay">
+    <>
+      {notif && (
+        <Notificacion tipo="registrado" onClose={() => { setNotif(false); if (onClose) onClose(); }} />
+      )}
+      <div className="form-overlay">
       <div className="form-card">
         <div className="form-header">
           <h2>Nueva Impresión</h2>
@@ -135,6 +141,7 @@ export default function PrintForm({ onClose }) {
           </button>
         </form>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

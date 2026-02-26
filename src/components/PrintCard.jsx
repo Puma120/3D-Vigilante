@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import Notificacion from "./Notificacion";
+import ConfirmDialog from "./ConfirmDialog";
 
 const ESTADOS = [
   { value: "pendiente", label: "Pendiente", color: "#f59e0b" },
@@ -31,17 +34,27 @@ function formatFecha(timestamp) {
 
 export default function PrintCard({ impresion }) {
   const { id, nombre, descripcion, filamento, notas, estado, fecha } = impresion;
+  const [notif, setNotif] = useState(null);
+  const [confirmar, setConfirmar] = useState(false);
 
   const handleEstadoChange = async (e) => {
+    const nuevoEstado = e.target.value;
     try {
-      await updateDoc(doc(db, "impresiones", id), { estado: e.target.value });
+      await updateDoc(doc(db, "impresiones", id), { estado: nuevoEstado });
+      if (nuevoEstado === "completado" || nuevoEstado === "cancelado") {
+        setNotif(nuevoEstado);
+      }
     } catch (err) {
       console.error("Error al actualizar estado:", err);
     }
   };
 
-  const handleEliminar = async () => {
-    if (!window.confirm(`¿Eliminar el registro de "${nombre}"?`)) return;
+  const handleEliminar = () => {
+    setConfirmar(true);
+  };
+
+  const confirmarEliminar = async () => {
+    setConfirmar(false);
     try {
       await deleteDoc(doc(db, "impresiones", id));
     } catch (err) {
@@ -50,7 +63,16 @@ export default function PrintCard({ impresion }) {
   };
 
   return (
-    <div className={`print-card estado-${estado}`}>
+    <>
+      {notif && <Notificacion tipo={notif} onClose={() => setNotif(null)} />}
+      {confirmar && (
+        <ConfirmDialog
+          mensaje={`Se eliminará el registro de "${nombre}" de forma permanente.`}
+          onConfirm={confirmarEliminar}
+          onCancel={() => setConfirmar(false)}
+        />
+      )}
+      <div className={`print-card estado-${estado}`}>
       <div className="card-header">
         <div className="card-meta">
           <span className="card-nombre">{nombre}</span>
@@ -93,5 +115,6 @@ export default function PrintCard({ impresion }) {
         </div>
       </div>
     </div>
+    </>
   );
 }

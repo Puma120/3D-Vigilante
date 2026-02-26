@@ -368,6 +368,120 @@ body {
   color: var(--text-muted);
 }
 
+/* ─── Notificaciones / Popups ───────────────────────────────────────── */
+.notif-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+.notif-card {
+  background: var(--surface);
+  border: 1px solid var(--notif-acento, var(--border));
+  border-top: 4px solid var(--notif-acento, var(--primary));
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 440px;
+  padding: 2rem 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  animation: notif-in 0.2s ease;
+}
+
+@keyframes notif-in {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+.notif-icono {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.notif-titulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.notif-mensajes {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: left;
+}
+
+.notif-mensajes li {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding-left: 1rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.notif-mensajes li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--notif-acento, var(--primary));
+  font-weight: 700;
+}
+
+.notif-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.7rem;
+  font-size: 1rem;
+}
+
+.notif-subtitulo {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.btn-outline {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.7rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+.btn-outline:hover { background: var(--surface2); border-color: var(--text-muted); }
+
+.confirm-actions .btn-primary { flex: 1; padding: 0.7rem; font-size: 1rem; }
+
 /* ─── Responsive ────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .cards-grid { grid-template-columns: 1fr; }
