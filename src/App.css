@@ -363,6 +363,21 @@ body {
   text-transform: uppercase;
 }
 
+.badge-hobby {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #22d3ee;
+  background: #22d3ee18;
+  border: 1px solid #22d3ee50;
+  border-radius: 6px;
+  padding: 0.18rem 0.65rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
 /* ─── Sección imprimiendo ──────────────────────────────────────────── */
 .imprimiendo-section {
   background: #3b82f608;
@@ -495,6 +510,10 @@ body {
   flex-shrink: 0;
   width: 300px;
   scroll-snap-align: start;
+}
+
+.cola-item-wrapper .print-card {
+  flex: 1;
 }
 
 .cola-posicion {

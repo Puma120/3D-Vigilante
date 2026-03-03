@@ -85,6 +85,19 @@ export default function PrintList() {
     <div className="print-list-container">
       {notif && <Notificacion tipo={notif} onClose={() => setNotif(null)} />}
 
+      {/* ── Sección imprimiendo: sube al tope si hay algo en curso ── */}
+      {hayImprimiendo && (
+        <section className="imprimiendo-section">
+          <div className="cola-header">
+            <h2 className="cola-titulo">Imprimiendo ahora</h2>
+            <span className="imprimiendo-badge">En curso</span>
+          </div>
+          <div className="imprimiendo-card-wrapper">
+            <PrintCard impresion={imprimiendo[0]} onNotif={setNotif} />
+          </div>
+        </section>
+      )}
+
       {/* ── Cola de impresión ── */}
       <section className="cola-section">
         <div className="cola-header">
@@ -101,8 +114,10 @@ export default function PrintList() {
                 <div className={`cola-posicion ${index === 0 ? "primero" : ""}`}>
                   {index === 0 ? "Siguiente" : `#${index + 1}`}
                 </div>
-                {esPrioritario(imp) && (
+                {esPrioritario(imp) ? (
                   <span className="badge-prioritario">Proyecto</span>
+                ) : (
+                  <span className="badge-hobby">Hobby</span>
                 )}
                 <PrintCard impresion={imp} onNotif={setNotif} hayImprimiendo={hayImprimiendo} />
               </div>
@@ -111,20 +126,15 @@ export default function PrintList() {
         )}
       </section>
 
-      {/* ── Imprimiendo ahora ── */}
-      <section className="imprimiendo-section">
-        <div className="cola-header">
-          <h2 className="cola-titulo">Imprimiendo ahora</h2>
-          {hayImprimiendo && <span className="imprimiendo-badge">En curso</span>}
-        </div>
-        {!hayImprimiendo ? (
-          <p className="cola-vacia">La impresora está libre.</p>
-        ) : (
-          <div className="imprimiendo-card-wrapper">
-            <PrintCard impresion={imprimiendo[0]} onNotif={setNotif} />
+      {/* ── Sección imprimiendo: abajo cuando la impresora está libre ── */}
+      {!hayImprimiendo && (
+        <section className="imprimiendo-section">
+          <div className="cola-header">
+            <h2 className="cola-titulo">Imprimiendo ahora</h2>
           </div>
-        )}
-      </section>
+          <p className="cola-vacia">La impresora está libre.</p>
+        </section>
+      )}
 
       {/* ── Historial ── */}
       <section>
