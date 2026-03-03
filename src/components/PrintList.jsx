@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import PrintCard from "./PrintCard";
+import Notificacion from "./Notificacion";
 
-const FILTROS = ["todos", "imprimiendo", "completado", "cancelado"];
+const FILTROS = ["todos", "completado", "cancelado"];
 
 export default function PrintList() {
   const [impresiones, setImpresiones] = useState([]);
@@ -11,6 +12,7 @@ export default function PrintList() {
   const [error, setError] = useState("");
   const [filtro, setFiltro] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
+  const [notif, setNotif] = useState(null);
 
   useEffect(() => {
     const q = query(collection(db, "impresiones"), orderBy("fecha", "desc"));
@@ -41,8 +43,11 @@ export default function PrintList() {
       return fechaA - fechaB;
     });
 
+  const imprimiendo = impresiones.filter((imp) => imp.estado === "imprimiendo");
+  const hayImprimiendo = imprimiendo.length > 0;
+
   const impresionesFiltradas = impresiones
-    .filter((imp) => imp.estado !== "pendiente")
+    .filter((imp) => imp.estado !== "pendiente" && imp.estado !== "imprimiendo")
     .filter((imp) => {
       const coincideFiltro = filtro === "todos" || imp.estado === filtro;
       const coincideBusqueda =
@@ -62,6 +67,7 @@ export default function PrintList() {
 
   return (
     <div className="print-list-container">
+      {notif && <Notificacion tipo={notif} onClose={() => setNotif(null)} />}
 
       {/* ── Cola de impresión ── */}
       <section className="cola-section">
@@ -79,9 +85,24 @@ export default function PrintList() {
                 <div className={`cola-posicion ${index === 0 ? "primero" : ""}`}>
                   {index === 0 ? "Siguiente" : `#${index + 1}`}
                 </div>
-                <PrintCard impresion={imp} />
+                <PrintCard impresion={imp} onNotif={setNotif} hayImprimiendo={hayImprimiendo} />
               </div>
             ))}
+          </div>
+        )}
+      </section>
+
+      {/* ── Imprimiendo ahora ── */}
+      <section className="imprimiendo-section">
+        <div className="cola-header">
+          <h2 className="cola-titulo">Imprimiendo ahora</h2>
+          {hayImprimiendo && <span className="imprimiendo-badge">En curso</span>}
+        </div>
+        {!hayImprimiendo ? (
+          <p className="cola-vacia">La impresora está libre.</p>
+        ) : (
+          <div className="imprimiendo-card-wrapper">
+            <PrintCard impresion={imprimiendo[0]} onNotif={setNotif} />
           </div>
         )}
       </section>
@@ -116,7 +137,7 @@ export default function PrintList() {
         ) : (
           <div className="cards-grid">
             {impresionesFiltradas.map((imp) => (
-              <PrintCard key={imp.id} impresion={imp} />
+              <PrintCard key={imp.id} impresion={imp} onNotif={setNotif} />
             ))}
           </div>
         )}

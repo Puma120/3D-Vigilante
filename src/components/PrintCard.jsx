@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import Notificacion from "./Notificacion";
 import ConfirmDialog from "./ConfirmDialog";
 
 const ESTADOS = [
@@ -32,17 +31,16 @@ function formatFecha(timestamp) {
   });
 }
 
-export default function PrintCard({ impresion }) {
+export default function PrintCard({ impresion, onNotif, hayImprimiendo }) {
   const { id, nombre, descripcion, filamento, notas, estado, fecha } = impresion;
-  const [notif, setNotif] = useState(null);
   const [confirmar, setConfirmar] = useState(false);
+  const [bloqueo, setBloqueo] = useState(false);
 
-  const handleEstadoChange = async (e) => {
-    const nuevoEstado = e.target.value;
+  const cambiarEstado = async (nuevoEstado) => {
     try {
       await updateDoc(doc(db, "impresiones", id), { estado: nuevoEstado });
-      if (nuevoEstado === "completado" || nuevoEstado === "cancelado") {
-        setNotif(nuevoEstado);
+      if ((nuevoEstado === "completado" || nuevoEstado === "cancelado") && onNotif) {
+        onNotif(nuevoEstado);
       }
     } catch (err) {
       console.error("Error al actualizar estado:", err);
@@ -62,15 +60,40 @@ export default function PrintCard({ impresion }) {
     }
   };
 
+  const handleIniciar = () => {
+    if (hayImprimiendo) {
+      setBloqueo(true);
+    } else {
+      cambiarEstado("imprimiendo");
+    }
+  };
+
   return (
     <>
-      {notif && <Notificacion tipo={notif} onClose={() => setNotif(null)} />}
       {confirmar && (
         <ConfirmDialog
           mensaje={`Se eliminará el registro de "${nombre}" de forma permanente.`}
           onConfirm={confirmarEliminar}
           onCancel={() => setConfirmar(false)}
         />
+      )}
+      {bloqueo && (
+        <div className="notif-overlay" onClick={() => setBloqueo(false)}>
+          <div
+            className="notif-card"
+            style={{ "--notif-acento": "#f59e0b" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="notif-icono" style={{ background: "#f59e0b22", color: "#f59e0b" }}>!</div>
+            <h3 className="notif-titulo">Impresora ocupada</h3>
+            <p className="notif-subtitulo">
+              Solo puede haber una pieza imprimiendo a la vez. Completa o cancela la impresión actual antes de iniciar otra.
+            </p>
+            <div className="confirm-actions">
+              <button className="btn-primary" onClick={() => setBloqueo(false)}>Entendido</button>
+            </div>
+          </div>
+        </div>
       )}
       <div className={`print-card estado-${estado}`}>
       <div className="card-header">
@@ -97,18 +120,21 @@ export default function PrintCard({ impresion }) {
         )}
 
         <div className="card-actions">
-          <select
-            className="estado-select"
-            value={estado}
-            onChange={handleEstadoChange}
-            aria-label="Cambiar estado"
-          >
-            {ESTADOS.map((e) => (
-              <option key={e.value} value={e.value}>
-                {e.label}
-              </option>
-            ))}
-          </select>
+          {estado === "pendiente" && (
+            <button className="btn-accion btn-iniciar" onClick={handleIniciar}>
+              Iniciar impresión
+            </button>
+          )}
+          {estado === "imprimiendo" && (
+            <>
+              <button className="btn-accion btn-completar" onClick={() => cambiarEstado("completado")}>
+                Completado
+              </button>
+              <button className="btn-accion btn-cancelar-accion" onClick={() => cambiarEstado("cancelado")}>
+                Cancelado
+              </button>
+            </>
+          )}
           <button className="btn-delete" onClick={handleEliminar} aria-label="Eliminar">
             Eliminar
           </button>
