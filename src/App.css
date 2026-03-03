@@ -343,6 +343,26 @@ body {
   border-top: 1px solid var(--border);
 }
 
+.cola-item-prioritario {
+  border-color: #a855f7 !important;
+  background: #a855f708;
+}
+
+.badge-prioritario {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #a855f7;
+  background: #a855f718;
+  border: 1px solid #a855f750;
+  border-radius: 6px;
+  padding: 0.18rem 0.65rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
 /* ─── Sección imprimiendo ──────────────────────────────────────────── */
 .imprimiendo-section {
   background: #3b82f608;

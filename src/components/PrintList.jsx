@@ -6,6 +6,17 @@ import Notificacion from "./Notificacion";
 
 const FILTROS = ["todos", "completado", "cancelado"];
 
+const PALABRAS_PRIORITARIAS = [
+  "proyecto", "ase", "importante", "universidad",
+  "tesis", "urgente", "escolar", "académico", "académica",
+  "entrega", "examen", "final",
+];
+
+function esPrioritario(imp) {
+  const texto = `${imp.notas ?? ""} ${imp.descripcion ?? ""} ${imp.nombre ?? ""}`.toLowerCase();
+  return PALABRAS_PRIORITARIAS.some((p) => texto.includes(p));
+}
+
 export default function PrintList() {
   const [impresiones, setImpresiones] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -34,14 +45,19 @@ export default function PrintList() {
     return () => unsubscribe();
   }, []);
 
-  // Cola FIFO: pendientes ordenados del más antiguo al más nuevo
-  const cola = [...impresiones]
+  // Cola FIFO con prioridad: proyectos universitarios van primero
+  const pendientes = [...impresiones]
     .filter((imp) => imp.estado === "pendiente")
     .sort((a, b) => {
       const fechaA = a.fecha?.toDate ? a.fecha.toDate() : new Date(a.fecha);
       const fechaB = b.fecha?.toDate ? b.fecha.toDate() : new Date(b.fecha);
       return fechaA - fechaB;
     });
+
+  const cola = [
+    ...pendientes.filter((imp) => esPrioritario(imp)),
+    ...pendientes.filter((imp) => !esPrioritario(imp)),
+  ];
 
   const imprimiendo = impresiones.filter((imp) => imp.estado === "imprimiendo");
   const hayImprimiendo = imprimiendo.length > 0;
@@ -81,10 +97,13 @@ export default function PrintList() {
         ) : (
           <div className="cola-scroll">
             {cola.map((imp, index) => (
-              <div key={imp.id} className="cola-item-wrapper">
+              <div key={imp.id} className={`cola-item-wrapper ${esPrioritario(imp) ? "cola-item-prioritario" : ""}`}>
                 <div className={`cola-posicion ${index === 0 ? "primero" : ""}`}>
                   {index === 0 ? "Siguiente" : `#${index + 1}`}
                 </div>
+                {esPrioritario(imp) && (
+                  <span className="badge-prioritario">Proyecto</span>
+                )}
                 <PrintCard impresion={imp} onNotif={setNotif} hayImprimiendo={hayImprimiendo} />
               </div>
             ))}

@@ -85,7 +85,7 @@ export default function PrintForm({ onClose }) {
             <textarea
               id="descripcion"
               name="descripcion"
-              placeholder="Describe el objeto a imprimir (nombre, tamaño, para qué sirve, etc.)"
+              placeholder="Describe el objeto a imprimir y especifica si es un proyecto (nombre, tamaño, para qué sirve, etc.)"
               value={form.descripcion}
               onChange={handleChange}
               disabled={cargando}
