@@ -644,8 +644,135 @@ body {
 .confirm-actions .btn-primary { flex: 1; padding: 0.7rem; font-size: 1rem; }
 
 /* ─── Responsive ────────────────────────────────────────────────────── */
+
+/* Tablet / teléfonos grandes */
+@media (max-width: 768px) {
+  .app-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .imprimiendo-card-wrapper {
+    max-width: 100%;
+  }
+}
+
+/* Teléfonos */
 @media (max-width: 600px) {
-  .cards-grid { grid-template-columns: 1fr; }
-  .header-content { flex-direction: column; align-items: flex-start; }
-  .radio-group { flex-direction: column; }
+  /* Header */
+  .app-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .header-title h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-title p {
+    font-size: 0.78rem;
+  }
+
+  .header-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    text-align: center;
+    padding: 0.7rem 1rem;
+  }
+
+  /* Main */
+  .app-main {
+    padding: 1.1rem 0.85rem;
+  }
+
+  /* Secciones de cola */
+  .cola-section {
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .cola-titulo {
+    font-size: 1rem;
+  }
+
+  /* Tarjetas en cola: ancho adaptado al viewport */
+  .cola-item-wrapper {
+    width: clamp(260px, 80vw, 300px);
+  }
+
+  /* Cards historial: una columna */
+  .cards-grid {
+    grid-template-columns: 1fr;
+    margin-top: 0.75rem;
+  }
+
+  /* Tarjeta individual */
+  .print-card {
+    padding: 1rem 1.1rem;
+  }
+
+  /* Acciones de tarjeta: si hay 3 botones, que se apilen */
+  .card-actions {
+    flex-wrap: wrap;
+  }
+
+  .btn-accion {
+    min-width: 7rem;
+  }
+
+  .btn-delete {
+    width: 100%;
+    margin-top: 0.1rem;
+  }
+
+  /* Sección imprimiendo */
+  .imprimiendo-section {
+    padding: 1rem 1.1rem;
+  }
+
+  .imprimiendo-card-wrapper {
+    max-width: 100%;
+  }
+
+  /* Formulario */
+  .form-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .form-card {
+    padding: 1.25rem 1rem 1.5rem;
+    border-radius: var(--radius) var(--radius) 0 0;
+    max-height: 92vh;
+  }
+
+  .radio-group {
+    flex-direction: column;
+  }
+
+  /* Popups */
+  .notif-card {
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+
+  .confirm-actions {
+    flex-direction: column;
+  }
+
+  .confirm-actions .btn-primary,
+  .confirm-actions .btn-outline {
+    width: 100%;
+  }
 }
